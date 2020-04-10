@@ -2,15 +2,15 @@
 #include <SFML/Graphics.hpp>
 #include "PhysicsCircle.h"
 
-class Game
+class App
 {
 public:
-    Game();
+    App();
     void run();
 
 private:
     void processEvents();
-    void update();
+    void update(sf::Time delta);
     void render();
 
     sf::RenderWindow _window;

@@ -1,26 +1,27 @@
 #include<thread>
 #include<chrono>
-#include "Game.h"
+#include "App.h"
 
 static int nextHue = 0;
 
 using namespace std::chrono_literals;
 
-Game::Game() : _window(sf::VideoMode(800, 600), "SFML APP"), _circles()
+App::App() : _window(sf::VideoMode(800, 600), "SFML APP"), _circles()
 {
 }
 
-void Game::run() 
+void App::run() 
 {
+	sf::Clock clock;
 	while (_window.isOpen()) {
+		auto delta = clock.restart();
 		processEvents();
-		update();
+		update(delta);
 		render();
-		std::this_thread::sleep_for(10ms);
 	}
 }
 
-void Game::processEvents()
+void App::processEvents()
 {
 	sf::Event e;
 	while (_window.pollEvent(e)) {
@@ -40,8 +41,9 @@ void Game::processEvents()
 	}
 }
 
-void Game::update()
+void App::update(sf::Time delta)
 {
+	const float attraction_constant = 10.0f;
 	if (_circles.size() <= 1) {
 		return;
 	}
@@ -51,19 +53,17 @@ void Game::update()
 	}
 	center = center / (float)_circles.size();
 
-	for (auto& c : _circles) {
-		auto d = (c.getPosition() - center);
-		auto d_squared = 200.f;
-		c.velocity -= (d / d_squared);
-		c.setPosition(c.getPosition() + (c.velocity));
+	for (auto& c : _circles)
+	{
+		c.applyMotion(delta, attraction_constant * (center - c.getPosition()));
 	}
 }
 
-void Game::render()
+void App::render()
 {
 	_window.clear();
     for(auto & c : _circles) {
-        _window.draw(c.graphic);
+        _window.draw(c.shape);
     }
 	_window.display();
 }

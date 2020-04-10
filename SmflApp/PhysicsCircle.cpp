@@ -32,24 +32,25 @@ static sf::Color fromHSV(int hue, float sat, float val)
     }
 }
 
-PhysicsCircle::PhysicsCircle(float x, float y, int hue) : graphic(RADIUS), velocity(0, 0)
+PhysicsCircle::PhysicsCircle(float x, float y, int hue) : shape(RADIUS), velocity(0, 0), mass(1)
 {
-    graphic.setFillColor(fromHSV(hue, 1, 1));
-    setPosition(x, y);
+    shape.setFillColor(fromHSV(hue, 1, 1));
+    shape.setPosition(x, y);
 }
 
-sf::Vector2f PhysicsCircle::getPosition()
+void PhysicsCircle::applyMotion(sf::Time delta)
 {
-    return _position;
+    applyMotion(delta, sf::Vector2f(0, 0));
 }
 
-void PhysicsCircle::setPosition(float x, float y)
+void PhysicsCircle::applyMotion(sf::Time delta, sf::Vector2f force)
 {
-    setPosition(sf::Vector2f(x, y));
+    auto a = force / mass;
+    velocity += delta.asSeconds() * a;
+    auto p = shape.getPosition();
+    p += delta.asSeconds() * velocity;
+    shape.setPosition(p);
 }
 
-void PhysicsCircle::setPosition(sf::Vector2f p) {
-    _position = p;
-    graphic.setPosition(p.x - RADIUS, p.y - RADIUS);
-}
+
 
