@@ -1,13 +1,18 @@
 #include<thread>
 #include<chrono>
 #include "App.h"
+#include "SfGeometry.h"
+
+#include <algorithm>
+#include <functional>
 
 static int nextHue = 0;
-
 using namespace std::chrono_literals;
 
 App::App() : _window(sf::VideoMode(800, 600), "SFML APP"), _circles()
 {
+	_window.setVerticalSyncEnabled(true);	// Guidance is to not use this with setFramerateLimit, but
+											// not sure how to get expected framerate otherwise
 }
 
 void App::run() 
@@ -21,6 +26,7 @@ void App::run()
 	}
 }
 
+// Use processEvents to gather user input and modify the objects within App
 void App::processEvents()
 {
 	sf::Event e;
@@ -41,31 +47,37 @@ void App::processEvents()
 	}
 }
 
+// Update should modify the objects within App according to the time elapsed since
+// the last render (e.g.: physics, changes derived from new user input).
 void App::update(sf::Time delta)
 {
-	const float attraction_constant = 10.0f;
+	const float attraction_constant = 5.0f;
 	if (_circles.size() <= 1) {
 		return;
 	}
-	sf::Vector2f center(0, 0);
-	for (auto& c : _circles) {
-		center += c.getPosition();
-	}
-	center = center / (float)_circles.size();
+
+	std::vector<sf::Vector2f> points;
+	points.resize(_circles.size());
+	std::transform(_circles.begin(), _circles.end(), points.begin(), std::mem_fn(&PhysicsCircle::getPosition));
+
+	auto center = SfGeometry::centerOfMass(points);
 
 	for (auto& c : _circles)
 	{
-		c.applyMotion(delta, attraction_constant * (center - c.getPosition()));
+		c.applyMotion(delta, attraction_constant * (_circles.size()-1) * (center - c.getPosition()));
 	}
 }
 
+// Render should call draw for the objects in scene.
 void App::render()
 {
-	_window.clear();
+	_window.clear(); // this is pretty universal
+
     for(auto & c : _circles) {
         _window.draw(c.shape);
     }
-	_window.display();
+
+	_window.display();	// this is also universal
 }
 
 

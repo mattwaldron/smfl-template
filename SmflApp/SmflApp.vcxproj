@@ -90,7 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="SfColor.h" />
     <ClInclude Include="PhysicsCircle.h" />
+    <ClInclude Include="SfGeometry.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
