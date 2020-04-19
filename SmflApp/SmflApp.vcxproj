@@ -86,10 +86,11 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PhysicsCircle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="BezierDraw.h" />
+    <ClInclude Include="GravitySim.h" />
     <ClInclude Include="SfColor.h" />
     <ClInclude Include="PhysicsCircle.h" />
     <ClInclude Include="SfGeometry.h" />

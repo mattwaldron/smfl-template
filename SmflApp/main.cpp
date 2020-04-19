@@ -1,9 +1,11 @@
-#include "App.h"
+#include "GravitySim.h"
+#include "BezierDraw.h"
 
 int main()
 {
-    App a;
-    a.run();
+    //GravitySim app;
+    BezierDraw app;
+    app.run();
 }
 
 
